@@ -1,0 +1,42 @@
+{
+  "name": "peritext-contextualizer-data-presentation",
+  "version": "0.0.8",
+  "description": "Peritext default data presentation contextualizer",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist; mkdir dist; webpack"
+  },
+  "author": "Robin de Mourat",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "^15.6.1"
+  },
+  "dependencies": {
+    "quinoa-presentation-player": "git+https://github.com/medialab/quinoa-presentation-player.git",
+    "react-markdown": "^2.5.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.0.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-decorators": "^6.13.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-es2015-for-of": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "css-loader": "^0.28.4",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.2",
+    "image-webpack-loader": "^3.3.1",
+    "node-sass": "^4.5.3",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^4.1.1",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.5.2",
+    "webpack-node-externals": "^1.6.0"
+  }
+}
