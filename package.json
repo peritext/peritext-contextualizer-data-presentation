@@ -1,6 +1,6 @@
 {
   "name": "peritext-contextualizer-data-presentation",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Peritext default data presentation contextualizer",
   "main": "dist/index.js",
   "scripts": {

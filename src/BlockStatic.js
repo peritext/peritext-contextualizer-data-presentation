@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 
 function LinkRenderer(props) {
@@ -6,45 +7,59 @@ function LinkRenderer(props) {
 }
 
 
-export default ({
+const BlockStatic = ({
   resource,
   contextualizer,
   contextualization
+}, {
+  datasets = {}
 }) => {
-
-  return (<figure className="peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-data-presentation">
+  const presentationData = resource.data.presentationData;
+  const dataset = datasets[resource.data.thumbnailDataset];
+  return presentationData ? (<figure className="peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-data-presentation">
     {
-      resource.data.thumbnail ?
+      dataset & dataset.uri ?
       <img className="resource-thumbnail"
-        src={resource.data.thumbnail}
+        src={dataset.uri}
       /> :
         <div className="thumbnail-placeholder" />
       
     }
     <div className="data-presentation-header">
       <h2>
-        {resource.data.metadata.title}
+        {presentationData.metadata.title}
       </h2>
       <p className="data-presentation-authors">
         {
-          resource.data.metadata.authors.join(', ')
+          presentationData.metadata.authors.join(', ')
         }.
       </p>
     </div>
     <div className="data-presentation-body">
       {
         contextualizer.displayCommentsInCodex &&
-        resource.data.order
+        presentationData.order
         .map(slideId => (
           <div key={slideId} className="static-slide">
-            <h3>{resource.data.slides[slideId].title}</h3>
+            <h3>{presentationData.slides[slideId].title}</h3>
             <ReactMarkdown
-              source={resource.data.slides[slideId].markdown}
-              renderers={{Link: LinkRenderer}}
+              source={presentationData.slides[slideId].markdown}
             />
           </div>
         ))
       }
     </div>
-  </figure>);
+  </figure>) : null;
+};
+
+BlockStatic.propTypes = {
+  resource: PropTypes.object,
+  contextualizer: PropTypes.object,
+  contextualization: PropTypes.object,
+};
+
+BlockStatic.contexTypes = {
+  datasets: PropTypes.object,
 }
+
+export default BlockStatic;
