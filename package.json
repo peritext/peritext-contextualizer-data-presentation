@@ -4,8 +4,10 @@
   "description": "Peritext default data presentation contextualizer",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist; mkdir dist; webpack"
+    "build": "rm -rf dist; mkdir dist; webpack",
+    "add-build": "git add dist"
   },
+  "pre-commit": ["build", "add-build"],
   "author": "Robin de Mourat",
   "license": "ISC",
   "peerDependencies": {
