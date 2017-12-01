@@ -7,7 +7,10 @@
     "build": "rm -rf dist; mkdir dist; webpack",
     "add-build": "git add dist"
   },
-  "pre-commit": ["build", "add-build"],
+  "pre-commit": [
+    "build",
+    "add-build"
+  ],
   "author": "Robin de Mourat",
   "license": "ISC",
   "peerDependencies": {
@@ -35,6 +38,7 @@
     "file-loader": "^0.11.2",
     "image-webpack-loader": "^3.3.1",
     "node-sass": "^4.5.3",
+    "pre-commit": "^1.2.2",
     "raw-loader": "^0.5.1",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.18.2",

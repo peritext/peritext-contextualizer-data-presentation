@@ -61,7 +61,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -72,6 +72,12 @@ module.exports = require("react");
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("prop-types");
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81,11 +87,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _metadata = __webpack_require__(2);
+var _metadata = __webpack_require__(3);
 
 var _metadata2 = _interopRequireDefault(_metadata);
 
-var _BlockDynamic = __webpack_require__(3);
+var _BlockDynamic = __webpack_require__(4);
 
 var _BlockDynamic2 = _interopRequireDefault(_BlockDynamic);
 
@@ -141,7 +147,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -197,7 +203,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -207,7 +213,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = __webpack_require__(4);
+var _extends2 = __webpack_require__(5);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -215,7 +221,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(5);
+var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -246,7 +252,7 @@ var BlockDynamic = function BlockDynamic(_ref, _ref2) {
       e.preventDefault();
     }
   };
-  var presentation = resource.data;
+  var presentation = (0, _extends3.default)({}, resource.data.presentationData);
 
   var handleExit = function handleExit(direction) {
     if (typeof onExit === 'function') {
@@ -267,17 +273,11 @@ var BlockDynamic = function BlockDynamic(_ref, _ref2) {
         onWheel: onWheel,
         onExit: handleExit,
         style: {
-          // position: 'absolute', // fixed ? 'fixed' : 'absolute',
-          // left: 0,
-          // top: 0,
-          // width: '100%',
-          // height: '100%',
           position: fixed ? 'fixed' : 'absolute',
           left: fixed ? dimensions.position.left + 5 : undefined,
           top: fixed ? dimensions.position.top + 5 : undefined,
           width: fixed ? dimensions.width - 10 : undefined,
           height: fixed ? dimensions.height - 10 : undefined,
-          // border: fixed ? '5px solid #f32e36' : undefined,
           pointerEvents: allowInteractions ? 'all' : 'none'
         }
       })
@@ -290,17 +290,9 @@ var BlockDynamic = function BlockDynamic(_ref, _ref2) {
  */
 BlockDynamic.contextTypes = {
   /**
-   * The active story data
-   */
-  story: _propTypes2.default.object,
-  /**
    * Dimensions of the wrapping element
    */
   dimensions: _propTypes2.default.object,
-  /**
-   * Id of the presentation being displayed full screen if any
-   */
-  fixedPresentationId: _propTypes2.default.string,
   /**
    * Whether the block asset is displayed in a note (and not in main content)
    */
@@ -310,16 +302,10 @@ BlockDynamic.contextTypes = {
 exports.default = BlockDynamic;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("babel-runtime/helpers/extends");
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("prop-types");
+module.exports = require("babel-runtime/helpers/extends");
 
 /***/ }),
 /* 6 */
@@ -342,6 +328,10 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = __webpack_require__(1);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _reactMarkdown = __webpack_require__(8);
 
 var _reactMarkdown2 = _interopRequireDefault(_reactMarkdown);
@@ -356,17 +346,20 @@ function LinkRenderer(props) {
   );
 }
 
-exports.default = function (_ref) {
+var BlockStatic = function BlockStatic(_ref, _ref2) {
   var resource = _ref.resource,
       contextualizer = _ref.contextualizer,
       contextualization = _ref.contextualization;
+  var _ref2$datasets = _ref2.datasets,
+      datasets = _ref2$datasets === undefined ? {} : _ref2$datasets;
 
-
-  return _react2.default.createElement(
+  var presentationData = resource.data.presentationData;
+  var dataset = datasets[resource.data.thumbnailDataset];
+  return presentationData ? _react2.default.createElement(
     'figure',
     { className: 'peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-data-presentation' },
-    resource.data.thumbnail ? _react2.default.createElement('img', { className: 'resource-thumbnail',
-      src: resource.data.thumbnail
+    dataset & dataset.uri ? _react2.default.createElement('img', { className: 'resource-thumbnail',
+      src: dataset.uri
     }) : _react2.default.createElement('div', { className: 'thumbnail-placeholder' }),
     _react2.default.createElement(
       'div',
@@ -374,36 +367,47 @@ exports.default = function (_ref) {
       _react2.default.createElement(
         'h2',
         null,
-        resource.data.metadata.title
+        presentationData.metadata.title
       ),
       _react2.default.createElement(
         'p',
         { className: 'data-presentation-authors' },
-        resource.data.metadata.authors.join(', '),
+        presentationData.metadata.authors.join(', '),
         '.'
       )
     ),
     _react2.default.createElement(
       'div',
       { className: 'data-presentation-body' },
-      contextualizer.displayCommentsInCodex && resource.data.order.map(function (slideId) {
+      contextualizer.displayCommentsInCodex && presentationData.order.map(function (slideId) {
         return _react2.default.createElement(
           'div',
           { key: slideId, className: 'static-slide' },
           _react2.default.createElement(
             'h3',
             null,
-            resource.data.slides[slideId].title
+            presentationData.slides[slideId].title
           ),
           _react2.default.createElement(_reactMarkdown2.default, {
-            source: resource.data.slides[slideId].markdown,
-            renderers: { Link: LinkRenderer }
+            source: presentationData.slides[slideId].markdown
           })
         );
       })
     )
-  );
+  ) : null;
 };
+
+BlockStatic.propTypes = {
+  resource: _propTypes2.default.object,
+  contextualizer: _propTypes2.default.object,
+  contextualization: _propTypes2.default.object
+};
+
+BlockStatic.contexTypes = {
+  datasets: _propTypes2.default.object
+};
+
+exports.default = BlockStatic;
 
 /***/ }),
 /* 8 */
