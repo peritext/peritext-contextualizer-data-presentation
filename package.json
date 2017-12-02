@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist; mkdir dist; webpack",
-    "add-build": "git add dist"
+    "add-build": "git add dist",
+    "storybook": "start-storybook -s ./dataset_examples -p 9001",
+    "build-storybook": "build-storybook"
   },
   "pre-commit": [
     "build",
@@ -17,6 +19,7 @@
     "react": "^15.6.1"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "quinoa-presentation-player": "git+https://github.com/medialab/quinoa-presentation-player.git",
     "react-markdown": "^2.5.0"
   },
@@ -43,6 +46,9 @@
     "sass-loader": "^4.1.1",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.2",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-node-externals": "^1.6.0",
+    "@storybook/react": "^3.2.16",
+    "@storybook/addon-actions": "^3.2.16",
+    "@storybook/addon-links": "^3.2.16"
   }
 }

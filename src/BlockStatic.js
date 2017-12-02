@@ -1,65 +1,134 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
+import {get} from 'axios';
 
 function LinkRenderer(props) {
   return <a href={props.href} target="_blank">{props.children}</a>
 }
 
 
-const BlockStatic = ({
-  resource,
-  contextualizer,
-  contextualization
-}, {
-  datasets = {}
-}) => {
-  const presentationData = resource.data.presentationData;
-  const dataset = datasets[resource.data.thumbnailDataset];
-  return presentationData ? (<figure className="peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-data-presentation">
+
+class BlockStatic extends Component {
+  static contextTypes = {
+    datasets: PropTypes.object,
+  }
+
+  constructor (props) {
+    super(props);
+  }
+
+  componentWillMount() {
+    this.updateData(this.props);
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (
+        this.props.data !== nextProps.data ||
+        this.getDataset(this.props) !== this.getDataset(nextProps)
+      ) {
+      this.updateData(nextProps);
+    }
+  }
+
+  getDataset = (props) => {
+    return this.context && 
+           this.context.datasets && 
+           this.context.datasets[props.resource.data.presentationDataset]
+  }
+
+  updateData = (props) => {
+    const dataset = this.getDataset(props);
+    if (dataset === undefined) {
+      return;
+    }
+    if (dataset.rawData) {
+      this.setState({
+        loading: false,
+        data: dataset.rawData,
+        error: undefined,
+      })
+    } else if (dataset.uri) {
+      this.setState({
+        loading: true,
+        error: undefined,
+      });
+      get(dataset.uri)
+      .then((response) => {
+        const data = response.data;
+        this.setState({
+          data,
+          loading: false,
+        })
+      })
+      .catch((error) => {
+        this.setState({
+          error
+        })
+      });
+    } else {
+      this.setState({
+        error: 'no-dataset'
+      })
+    }
+  }
+
+  render() {
+    const {
+      props: {
+        resource = {},
+        contextualizer = {},
+        allowInteractions = true,
+        fixed,
+        onExit,
+      }, 
+      state: {
+        data,
+        loading
+      },
+      context: {
+        dimensions,
+        datasets = {}
+      }
+    } = this;
+
+    const thumbnail = resource.data.thumbnailDataset && datasets[resource.data.thumbnailDataset];
+
+    return loading === false ? (<figure className="peritext-contextualization peritext-contextualization-block peritext-contextualization-codex peritext-contextualizer-data-presentation">
     {
-      dataset & dataset.uri ?
+      thumbnail && thumbnail.uri ?
       <img className="resource-thumbnail"
-        src={dataset.uri}
+        src={thumbnail.uri}
       /> :
         <div className="thumbnail-placeholder" />
       
     }
     <div className="data-presentation-header">
       <h2>
-        {presentationData.metadata.title}
+        {data.metadata.title}
       </h2>
       <p className="data-presentation-authors">
         {
-          presentationData.metadata.authors.join(', ')
+          data.metadata.authors.join(', ')
         }.
       </p>
     </div>
     <div className="data-presentation-body">
       {
         contextualizer.displayCommentsInCodex &&
-        presentationData.order
+        data.order
         .map(slideId => (
           <div key={slideId} className="static-slide">
-            <h3>{presentationData.slides[slideId].title}</h3>
+            <h3>{data.slides[slideId].title}</h3>
             <ReactMarkdown
-              source={presentationData.slides[slideId].markdown}
+              source={data.slides[slideId].markdown}
             />
           </div>
         ))
       }
     </div>
   </figure>) : null;
-};
-
-BlockStatic.propTypes = {
-  resource: PropTypes.object,
-  contextualizer: PropTypes.object,
-  contextualization: PropTypes.object,
-};
-
-BlockStatic.contexTypes = {
-  datasets: PropTypes.object,
+  }
 }
 
 export default BlockStatic;
